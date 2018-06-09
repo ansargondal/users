@@ -1,0 +1,77 @@
+=> Container (Ioc, DI)
+    It is used to resolve dependencies automatically or if the constructor of the
+    class is complex we have to explicitly bind the class to it.
+
+    => Getting Instance of a Class Out of Container
+        - app(Logger::class)  //will return the instance of logger class
+        - if we are in service providers then we can use
+            $this->app()->make(Logger::class);
+    => Binding Class to the Container
+        - For simple class Constructor container will resolve their dependencies
+            automatically.
+        - For complex class Contructor we have to bind the class explicitly to
+        the container.
+    + Binding to Closure
+        - Simplest way of binding a class to constructor is the Service provider
+            Register Method.
+        - $this->app->bind(Logger::class, ...);
+
+            public function register(){
+                $this->app->bind(Logger::class, function($app){
+                      return new Logger('log path here', 'error{log level}')
+                }
+            }
+    + Binding to Singletons
+        - If we want to cache the binding to closure then we can use singleton
+        $this->app->singleton(Logger::class, function($app){
+             return new Logger('log path here', 'error');
+             });
+
+
+        - If we already have an object we can use instance method, It will do the
+            same.
+            $logger = new Logger('...', '...');
+            $this->app->instance(Logger::class, $logger);
+
+
+        + Aliasing a class
+            If we want to alias a class new to make a shortcut we can use
+
+            $this->bind(Logger::class, 'log');
+            //or
+            $this->bind('log', Logger::class);
+
+
+
+    => Calling a Method of a class with Container
+
+            app()->call($foo, 'bar', ['parameter1' => 'value']);
+
+
+=> Laravel Facades
+    - Laravel Facades are laravel classes, we can use static method calls
+        to call the non static methods of a class
+
+    - Working of a Facade
+
+        class Slack extends Facade{
+
+                public static function getFacadeAccessor(){
+                    return 'slack';
+                    }
+
+         }
+        - When we call Slack::message('all');
+        - It will be converted to
+          app('slack')->message('all');
+
+         - Finally we have to register Facade to app.php file
+
+
+=> Concepts
+    - Type Hinting
+    - Constructor DI
+    - Method DI
+    - app() Global Helper
+
+
